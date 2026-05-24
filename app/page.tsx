@@ -1,14 +1,17 @@
 import { ContinueLearning } from "@/components/ContinueLearning";
 import { ProgressPanel } from "@/components/ProgressPanel";
 import { TopicCard } from "@/components/TopicCard";
+import { getProblemsByTopic } from "@/lib/problems";
 import { topics } from "@/lib/topics";
 
 export default function HomePage() {
   const sortedTopics = [...topics].sort((a, b) => a.order - b.order);
+  const readyTopics = sortedTopics.filter((t) => getProblemsByTopic(t.id).length > 0);
+  const upcomingTopics = sortedTopics.filter((t) => getProblemsByTopic(t.id).length === 0);
 
   return (
     <div>
-      <div className="mb-10">
+      <div className="mb-8">
         <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-[var(--primary)]">
           Математика · 9 класс
         </p>
@@ -21,16 +24,27 @@ export default function HomePage() {
 
       <ContinueLearning />
 
+      <div className="mb-10">
+        <ProgressPanel />
+      </div>
+
       <h2 className="mb-4 text-lg font-bold">Темы для изучения</h2>
       <div className="grid gap-4 sm:grid-cols-2">
-        {sortedTopics.map((topic) => (
+        {readyTopics.map((topic) => (
           <TopicCard key={topic.id} topic={topic} />
         ))}
       </div>
 
-      <div className="mt-10">
-        <ProgressPanel />
-      </div>
+      {upcomingTopics.length > 0 && (
+        <>
+          <h2 className="mb-4 mt-10 text-lg font-bold text-[var(--muted)]">Скоро</h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {upcomingTopics.map((topic) => (
+              <TopicCard key={topic.id} topic={topic} comingSoon />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

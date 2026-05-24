@@ -1,4 +1,5 @@
-import type { Progress, TaskProgress } from "./types";
+import { getProblemsByTopic } from "./problems";
+import type { Progress, TaskProgress, TopicId } from "./types";
 
 const STORAGE_KEY = "quadratic-trainer-progress";
 
@@ -22,6 +23,7 @@ export function loadProgress(): Progress {
 export function saveProgress(progress: Progress): void {
   if (typeof window === "undefined") return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  window.dispatchEvent(new Event("toha-progress"));
 }
 
 export function recordAttempt(taskId: string, correct: boolean): Progress {
@@ -55,4 +57,15 @@ export function getSolvedByDifficulty(
 ): { solved: number; total: number } {
   const solved = taskIds.filter((id) => progress.tasks[id]?.solved).length;
   return { solved, total: taskIds.length };
+}
+
+export function getTopicTrainerStats(
+  progress: Progress,
+  topicId: TopicId,
+): { solved: number; total: number; attempted: number } {
+  const problems = getProblemsByTopic(topicId);
+  const ids = problems.map((p) => p.id);
+  const solved = ids.filter((id) => progress.tasks[id]?.solved).length;
+  const attempted = ids.filter((id) => (progress.tasks[id]?.attempts ?? 0) > 0).length;
+  return { solved, total: problems.length, attempted };
 }

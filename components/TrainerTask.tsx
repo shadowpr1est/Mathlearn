@@ -19,7 +19,9 @@ interface TrainerTaskProps {
   onProgressUpdate: () => void;
   onAnswered?: (correct: boolean, problem: Problem) => void;
   onNext?: () => void;
+  onPrev?: () => void;
   hasNext: boolean;
+  hasPrev?: boolean;
 }
 
 const emptyAnswer = (): UserAnswer => ({ mode: "two", x1: "", x2: "" });
@@ -38,13 +40,16 @@ export function TrainerTask({
   onProgressUpdate,
   onAnswered,
   onNext,
+  onPrev,
   hasNext,
+  hasPrev = false,
 }: TrainerTaskProps) {
   const [answer, setAnswer] = useState<UserAnswer>(emptyAnswer);
   const [result, setResult] = useState<{ correct: boolean; message: string } | null>(null);
   const [hintCount, setHintCount] = useState(0);
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [shakeInput, setShakeInput] = useState(false);
   const hints = getHintSteps(problem);
 
   useEffect(() => {
@@ -53,6 +58,7 @@ export function TrainerTask({
     setHintCount(0);
     setWrongAttempts(0);
     setShowAnswer(false);
+    setShakeInput(false);
   }, [problem.id]);
 
   const handleCheck = () => {
@@ -63,6 +69,11 @@ export function TrainerTask({
     onAnswered?.(validation.correct, problem);
     if (!validation.correct) {
       setWrongAttempts((n) => n + 1);
+      setShakeInput(true);
+      window.setTimeout(() => setShakeInput(false), 400);
+      requestAnimationFrame(() => {
+        document.getElementById(`answer-x1-${problem.id}`)?.focus();
+      });
     }
   };
 
@@ -104,10 +115,12 @@ export function TrainerTask({
 
         <div className="mt-6">
           <AnswerForm
+            inputIdPrefix={problem.id}
             value={answer}
             onChange={setAnswer}
             onSubmit={handleCheck}
             disabled={locked}
+            shake={shakeInput}
           />
         </div>
 
@@ -137,7 +150,7 @@ export function TrainerTask({
           <div
             className={`mt-5 rounded-xl p-4 ${
               result.correct
-                ? "border border-emerald-200 bg-emerald-50 text-emerald-800"
+                ? "border border-emerald-200 bg-emerald-50 text-emerald-800 animate-[fadeIn_0.25s_ease-out]"
                 : "border border-red-200 bg-red-50 text-red-800"
             }`}
             role="status"
@@ -149,11 +162,23 @@ export function TrainerTask({
           </div>
         )}
 
-        {locked && hasNext && onNext && (
-          <button type="button" onClick={onNext} className="btn-primary mt-5 w-full sm:w-auto">
-            Следующая задача →
-          </button>
-        )}
+        <div className="mt-6 flex flex-wrap items-center gap-2">
+          {hasPrev && onPrev && (
+            <button type="button" onClick={onPrev} className="btn-secondary">
+              ← Предыдущая
+            </button>
+          )}
+          {locked && hasNext && onNext && (
+            <button type="button" onClick={onNext} className="btn-primary">
+              Следующая задача →
+            </button>
+          )}
+          {!locked && hasNext && onNext && (
+            <button type="button" onClick={onNext} className="btn-secondary">
+              Пропустить →
+            </button>
+          )}
+        </div>
       </div>
     </article>
   );

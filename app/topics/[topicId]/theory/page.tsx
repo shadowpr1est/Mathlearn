@@ -20,7 +20,7 @@ export default async function TopicTheoryPage({ params }: PageProps) {
 
   return (
     <div>
-      <RememberTopic topicId={topicId} />
+      <RememberTopic topicId={topicId} section="theory" />
       <Breadcrumbs topicId={topicId} current="theory" />
       <h1 className="page-title">Теория</h1>
       <p className="page-subtitle mb-8">Тема: {topic.title}</p>

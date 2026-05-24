@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { RememberTopic } from "@/components/RememberTopic";
+import { TopicLearningPath } from "@/components/TopicLearningPath";
 import { TopicSectionLinks } from "@/components/TopicSectionLinks";
 import { getTopic, isTopicId } from "@/lib/topics";
 
@@ -27,8 +28,10 @@ export default async function TopicPage({ params }: PageProps) {
         <p className="mt-2 max-w-xl text-white/90">{topic.shortDescription}</p>
       </div>
 
+      <TopicLearningPath topic={topic} />
+
       <p className="mb-4 text-sm font-medium text-[var(--foreground)]">
-        Выберите раздел для изучения:
+        Все разделы темы:
       </p>
       <TopicSectionLinks topic={topic} />
     </div>

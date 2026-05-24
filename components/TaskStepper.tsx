@@ -44,21 +44,19 @@ export function TaskStepper({ tasks, currentIndex, progress, onSelect }: TaskSte
             onClick={() => onSelect(i)}
             title={`Задача ${i + 1}${solved ? " (решена)" : ""}`}
             aria-label={`Задача ${i + 1}${solved ? ", решена" : ""}${isCurrent ? ", текущая" : ""}`}
-            className={`box-border flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
+            className={`box-border flex h-8 min-w-8 shrink-0 items-center justify-center rounded-full border-2 px-1 text-xs font-semibold transition-all ${
               isCurrent
-                ? "border-[var(--primary)] bg-indigo-50"
-                : "border-transparent hover:border-gray-200 hover:bg-gray-50"
+                ? "border-[var(--primary)] bg-indigo-50 text-[var(--primary)]"
+                : solved
+                  ? "border-emerald-300 bg-emerald-50 text-emerald-700"
+                  : "border-transparent text-[var(--muted)] hover:border-gray-200 hover:bg-gray-50"
             }`}
           >
-            <span
-              className={`rounded-full transition-all ${
-                isCurrent
-                  ? "h-3 w-3 bg-[var(--primary)]"
-                  : solved
-                    ? "h-2.5 w-2.5 bg-emerald-400"
-                    : "h-2.5 w-2.5 bg-gray-300"
-              }`}
-            />
+            {solved && !isCurrent ? (
+              <span aria-hidden>✓</span>
+            ) : (
+              <span>{i + 1}</span>
+            )}
           </button>
         );
       })}

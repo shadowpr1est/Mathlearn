@@ -8,10 +8,21 @@ const LAST_TOPIC_KEY = "toha-last-topic";
 
 export function ContinueLearning() {
   const [topicId, setTopicId] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     setTopicId(localStorage.getItem(LAST_TOPIC_KEY));
   }, []);
+
+  if (!mounted) {
+    return (
+      <div
+        className="mb-8 h-[88px] animate-pulse rounded-2xl border border-indigo-100 bg-indigo-50/50"
+        aria-hidden
+      />
+    );
+  }
 
   if (!topicId) return null;
 

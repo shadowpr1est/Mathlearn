@@ -7,6 +7,8 @@ interface AnswerFormProps {
   onChange: (value: UserAnswer) => void;
   onSubmit: () => void;
   disabled?: boolean;
+  inputIdPrefix?: string;
+  shake?: boolean;
 }
 
 const modes: { id: AnswerMode; label: string }[] = [
@@ -15,7 +17,15 @@ const modes: { id: AnswerMode; label: string }[] = [
   { id: "none", label: "Нет корней" },
 ];
 
-export function AnswerForm({ value, onChange, onSubmit, disabled }: AnswerFormProps) {
+export function AnswerForm({
+  value,
+  onChange,
+  onSubmit,
+  disabled,
+  inputIdPrefix = "answer",
+  shake = false,
+}: AnswerFormProps) {
+  const x1Id = `answer-x1-${inputIdPrefix}`;
   const setMode = (mode: AnswerMode) => {
     onChange({
       mode,
@@ -58,12 +68,13 @@ export function AnswerForm({ value, onChange, onSubmit, disabled }: AnswerFormPr
           <label className="flex flex-col gap-1.5">
             <span className="text-sm font-medium">{value.mode === "one" ? "x" : "x₁"}</span>
             <input
+              id={x1Id}
               type="text"
               inputMode="decimal"
               value={value.x1}
               onChange={(e) => onChange({ ...value, x1: e.target.value })}
               disabled={disabled}
-              className="input-field w-32"
+              className={`input-field w-32 ${shake ? "animate-shake border-red-300" : ""}`}
               placeholder={value.mode === "one" ? "напр. 5" : "напр. 2"}
             />
           </label>

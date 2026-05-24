@@ -23,7 +23,10 @@ export function ProgressPanel({ compact = false, refreshKey = 0, topicId }: Prog
   const scopeIds = scopeProblems.map((p) => p.id);
 
   useEffect(() => {
-    setProgress(loadProgress());
+    const refresh = () => setProgress(loadProgress());
+    refresh();
+    window.addEventListener("toha-progress", refresh);
+    return () => window.removeEventListener("toha-progress", refresh);
   }, [refreshKey]);
 
   const solvedInScope = progress

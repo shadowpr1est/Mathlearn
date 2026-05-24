@@ -216,34 +216,44 @@ export function TrainerView({ topicId, topicTitle }: TrainerViewProps) {
             </div>
           </div>
 
-          <div>
-            <p className="text-sm font-medium text-[var(--foreground)]">Уровень сложности</p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {(["all", "easy", "medium", "hard"] as Filter[]).map((key) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => setFilter(key)}
-                  className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
-                    filter === key
-                      ? "bg-[var(--primary)] text-white shadow-md shadow-indigo-200"
-                      : "bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--foreground)]"
-                  }`}
-                >
-                  {difficultyLabels[key]}
-                </button>
-              ))}
+          {mode !== "quiz" && (
+            <div>
+              <p className="text-sm font-medium text-[var(--foreground)]">Уровень сложности</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {(["all", "easy", "medium", "hard"] as Filter[]).map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setFilter(key)}
+                    className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                      filter === key
+                        ? "bg-[var(--primary)] text-white shadow-md shadow-indigo-200"
+                        : "bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--foreground)]"
+                    }`}
+                  >
+                    {difficultyLabels[key]}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
-        <div className="mt-5 overflow-x-auto px-1 py-2">
-          <TaskStepper
-            tasks={activeProblems}
-            currentIndex={currentIndex}
-            progress={progress}
-            onSelect={setCurrentIndex}
-          />
+        <div className="mt-5">
+          <div className="mb-2 flex items-center justify-between px-1 text-sm">
+            <span className="font-medium text-[var(--foreground)]">Задачи</span>
+            <span className="text-[var(--muted)]">
+              {currentIndex + 1} / {activeProblems.length}
+            </span>
+          </div>
+          <div className="overflow-x-auto px-1 py-2">
+            <TaskStepper
+              tasks={activeProblems}
+              currentIndex={currentIndex}
+              progress={progress}
+              onSelect={setCurrentIndex}
+            />
+          </div>
         </div>
       </div>
 
@@ -254,6 +264,15 @@ export function TrainerView({ topicId, topicTitle }: TrainerViewProps) {
             {quizCorrect} из {quizProblems.length} верно
           </h2>
           <p className="mt-1 text-sm text-[var(--muted)]">Время: {formatTime(elapsedSeconds)}</p>
+          {quizMistakes.length > 0 && (
+            <p className="mt-3 text-sm text-[var(--muted)]">
+              Ошибки в задачах:{" "}
+              {quizMistakes
+                .map((id) => quizProblems.findIndex((p) => p.id === id) + 1)
+                .filter((n) => n > 0)
+                .join(", ")}
+            </p>
+          )}
           <div className="mt-4 flex flex-wrap gap-2">
             <button type="button" onClick={startQuiz} className="btn-primary">
               Новая контрольная
@@ -281,22 +300,10 @@ export function TrainerView({ topicId, topicTitle }: TrainerViewProps) {
             onProgressUpdate={refreshProgress}
             onAnswered={handleAnswered}
             onNext={goNext}
+            onPrev={goPrev}
             hasNext={currentIndex < activeProblems.length - 1}
+            hasPrev={currentIndex > 0}
           />
-
-          <div className="flex justify-between gap-3">
-            <button type="button" onClick={goPrev} disabled={currentIndex === 0} className="btn-secondary">
-              ← Предыдущая
-            </button>
-            <button
-              type="button"
-              onClick={goNext}
-              disabled={currentIndex >= activeProblems.length - 1}
-              className="btn-secondary"
-            >
-              Следующая →
-            </button>
-          </div>
         </>
       )}
     </div>

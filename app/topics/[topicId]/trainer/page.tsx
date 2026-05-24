@@ -17,7 +17,7 @@ export default async function TopicTrainerPage({ params }: PageProps) {
 
   return (
     <div>
-      <RememberTopic topicId={topicId} />
+      <RememberTopic topicId={topicId} section="trainer" />
       <Breadcrumbs topicId={topicId} current="trainer" />
       <TrainerView topicId={topicId} topicTitle={topic.title} />
     </div>

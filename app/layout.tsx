@@ -9,9 +9,9 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Квадратные уравнения — теория, примеры, тренажёр",
+  title: "Математика — теория, примеры, тренажёр",
   description:
-    "Образовательный сайт для 9 класса: теория квадратных уравнений, разобранные примеры и интерактивный тренажёр.",
+    "Образовательный сайт для 9 класса: теория, разобранные примеры и интерактивный тренажёр по математике.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -19,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ru">
       <body className={`${jakarta.className} min-h-screen antialiased`}>
         <Header />
-        <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">{children}</main>
+        <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">{children}</main>
       </body>
     </html>
   );
