@@ -5,6 +5,9 @@ import { fileURLToPath } from "url";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const out = join(root, "dist");
 
+const DATA_TS = ["topics", "problems", "examples", "theory"];
+const LOGIC_JS = ["validate", "progress", "equation", "topicVisit", "hints"];
+
 function stripTs(content) {
   return content
     .replace(/^import .* from .*;\r?\n/gm, "")
@@ -13,25 +16,23 @@ function stripTs(content) {
     .replace(/export type [\s\S]*?;\r?\n/gm, "")
     .replace(/: (Problem|Example|TheorySection|TopicId|Progress|TaskProgress|HintStep|UserAnswer|ValidationResult|ProblemAnswer|Topic)(\[\])?/g, "")
     .replace(/: Record<[^>]+>/g, "")
+    .replace(/: string\[\]/g, "")
+    .replace(/: number\[\]/g, "")
     .replace(/(\w+): string/g, "$1")
-    .replace(/\)\s*:\s*[^{]+(?=\s*\{)/g, ")")
-    .replace(/\)\s*\|\s*undefined\s*(?=\s*\{)/g, ")")
+    .replace(/(\w+): TopicId/g, "$1")
+    .replace(/^export function (\w+)\(([^)]*)\)[^{]*\{/gm, "export function $1($2) {")
     .replace(/ as Progress/g, "")
     .replace(/filter\(\(s\): s is TheorySection =>/g, "filter((s) =>")
     .replace(/from "\.\/([^"]+)"/g, 'from "./$1.js"');
 }
 
-function convertLib(name) {
+function convertDataTs(name) {
   const src = readFileSync(join(root, "lib", `${name}.ts`), "utf8");
-  let js = stripTs(src);
-  if (name === "progress") {
-    js = `import { getProblemsByTopic } from "./problems.js";\n${js}`;
-  }
-  if (name === "hints") {
-    js = `import { getDiscriminant } from "./validate.js";\n${js}`;
-  }
-  mkdirSync(join(out, "js"), { recursive: true });
-  writeFileSync(join(out, "js", `${name}.js`), js);
+  writeFileSync(join(out, "js", `${name}.js`), stripTs(src));
+}
+
+function copyLogicJs(name) {
+  cpSync(join(root, "lib", `${name}.js`), join(out, "js", `${name}.js`));
 }
 
 function prefix(depth) {
@@ -70,15 +71,12 @@ function writePage(relPath, html) {
   writeFileSync(full, html);
 }
 
-// lib → js
-["topics", "problems", "examples", "theory", "validate", "hints", "equation", "topicVisit", "progress"].forEach(
-  convertLib,
-);
+mkdirSync(join(out, "js"), { recursive: true });
+DATA_TS.forEach(convertDataTs);
+LOGIC_JS.forEach(copyLogicJs);
 
-// UI scripts
 cpSync(join(root, "static-src", "js"), join(out, "js"), { recursive: true });
 
-// CSS
 mkdirSync(join(out, "css"), { recursive: true });
 cpSync(join(root, "static-src", "main.css"), join(out, "css", "main.css"));
 
