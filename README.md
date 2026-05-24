@@ -2,6 +2,8 @@
 
 Образовательный сайт для 9 класса на **чистом HTML, CSS и JavaScript** (без React/Next.js).
 
+Зависимостей npm **нет** — нужен только [Node.js](https://nodejs.org/) 18+.
+
 ## Разделы
 
 - **Теория** — формулы и правила по темам
@@ -11,17 +13,24 @@
 ## Локальный запуск
 
 ```bash
-npm run build
-npm run dev
+node scripts/build.mjs
+node scripts/serve.mjs
 ```
 
 Откройте [http://localhost:3000](http://localhost:3000).
 
-Исходники логики и данных — в `lib/` (TypeScript, для удобства редактирования).  
-Скрипт `npm run build` собирает сайт в папку `dist/`.
+Или одной командой (если установлен npm):
+
+```bash
+npm run dev
+```
+
+Исходники данных и логики — в `lib/` (TypeScript).  
+Интерфейс — в `static-src/`.  
+Сборка кладёт готовый сайт в `dist/`.
 
 ## Деплой
 
-Подключите репозиторий к [Vercel](https://vercel.com) — сборка: `npm run build`, публикация из `dist/`.
+[Vercel](https://vercel.com): `node scripts/build.mjs`, папка `dist/` (см. `vercel.json`).
 
 Прогресс тренажёра сохраняется в `localStorage` браузера.

@@ -1,14 +1,9 @@
 {
   "name": "mathlearn",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "dev": "npm run build && npx serve dist",
-    "test": "vitest run"
-  },
-  "devDependencies": {
-    "vitest": "^4.1.7"
+    "dev": "node scripts/build.mjs && node scripts/serve.mjs"
   }
 }
