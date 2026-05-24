@@ -18,10 +18,10 @@ npm run dev
 Откройте [http://localhost:3000](http://localhost:3000).
 
 Исходники логики и данных — в `lib/` (TypeScript, для удобства редактирования).  
-Скрипт `npm run build` генерирует HTML-страницы и копирует JS/CSS в корень проекта.
+Скрипт `npm run build` собирает сайт в папку `dist/`.
 
 ## Деплой
 
-Подключите репозиторий к [Vercel](https://vercel.com) — сборка: `npm run build`, статические файлы в корне.
+Подключите репозиторий к [Vercel](https://vercel.com) — сборка: `npm run build`, публикация из `dist/`.
 
 Прогресс тренажёра сохраняется в `localStorage` браузера.

@@ -3,7 +3,7 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const out = root;
+const out = join(root, "dist");
 
 function stripTs(content) {
   return content

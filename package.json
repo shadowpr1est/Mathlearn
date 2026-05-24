@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "dev": "npx serve .",
+    "dev": "npm run build && npx serve dist",
     "test": "vitest run"
   },
   "devDependencies": {
